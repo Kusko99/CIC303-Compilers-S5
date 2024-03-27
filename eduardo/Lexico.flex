@@ -20,12 +20,12 @@ package Lexico;
 
 %eof{
     System.out.println("Análise léxica terminada com sucesso!");
-%}
+%eof}
 
 %{
     
 private enum Tag {
-    ID, NUMBER, IF, THEN, ELSE, WHILE, DO, LET, IN, BEGIN, END, LT, EQ, GT, MULT, PLUS, MINUS, DIV, BACKSLASH, SEMICOLON, LPAREN, RPAREN
+    EOF, ID, NUMBER, IF, THEN, ELSE, WHILE, DO, LET, IN, BEGIN, END, LT, EQ, GT, MULT, PLUS, MINUS, DIV, BACKSLASH, SEMICOLON, LPAREN, RPAREN, ASSIGN, CONST, VAR, TILDE, COLON
 }
 
 private class Token {
@@ -100,16 +100,21 @@ integer_literal = {digit}({digit})*
 "begin"     { return new Word(Tag.BEGIN);}
 "end"       { return new Word(Tag.END);}
 
-"<"			{ return new Word(Tag.LT);}
-"="			{ return new Word(Tag.EQ);}
-">"			{ return new Word(Tag.GT);}
-"*"			{ return new Word(Tag.MULT);}
-"+"			{ return new Word(Tag.PLUS);}
-"-"			{ return new Word(Tag.MINUS);}
-"/"			{ return new Word(Tag.DIV);}
-"\"			{ return new Word(Tag.BACKSLASH);}
+"<"			{ return new Word(Tag.LT, yytext());}
+"="			{ return new Word(Tag.EQ, yytext());}
+">"			{ return new Word(Tag.GT, yytext());}
+"*"			{ return new Word(Tag.MULT, yytext());}
+"+"			{ return new Word(Tag.PLUS, yytext());}
+"-"			{ return new Word(Tag.MINUS, yytext());}
+"/"			{ return new Word(Tag.DIV, yytext());}
+"\\\\"		{ return new Word(Tag.BACKSLASH, yytext());}
+":="		{ return new Word(Tag.ASSIGN, yytext()); }
 ";"			{ return new Word(Tag.SEMICOLON, yytext()); }
 "("			{ return new Word(Tag.LPAREN, yytext()); }
-")"			{ return new Word(Tag.RPAREN, yytext()); }kk
+")"			{ return new Word(Tag.RPAREN, yytext()); }
+"const"     { return new Word(Tag.CONST, yytext()); }
+"var"       { return new Word(Tag.VAR, yytext()); }
+"~"         { return new Word(Tag.TILDE, yytext()); }
+":"         { return new Word(Tag.COLON, yytext()); }
 {identifier}		{ return new Id(yytext()); }
 {integer_literal}	{ return new Num(Double.parseDouble(yytext())); }

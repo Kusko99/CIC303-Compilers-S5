@@ -1,0 +1,58 @@
+<project name="Exemplo1" default="dist" basedir=".">
+    <description>
+        Script Ant para compilar projetos com JFlex
+    </description>
+    <!-- Propriedades globais -->
+    <property name="jflexFile" value="exemplo1.jflex" />
+    <property name="package" value="exemplo1" />
+    <property name="mainClass" value="Lexer" />
+    <condition property="runMainClass" value="${package}.${mainClass}" else="${mainClass}">
+        <isset property="package"/>
+    </condition>
+    <property name="jarFile" value="exemplo1.jar" />
+    <property name="src" location="src" />
+    <property name="tools" location="tools" />
+    <property name="jflex" location="jflex" />
+    <property name="build" location="build" />
+    <property name="dist" location="dist" />
+    <taskdef name="jflex" classname="jflex.anttask.JFlexTask" classpath="${tools}/jflex-full-1.9.1.jar" />
+    <!-- init - cria a pasta build para armazenar .class -->
+    <target name="init">
+        <!-- Criar o diretório build, de construção se ele não existir -->
+        <mkdir dir="${build}" />
+    </target>
+    <!-- compile - compila as classes e armazena em build -->
+    <target name="compile" depends="init" description="compilar as fontes">
+        <!-- Executar jflex sobre o arquivo JFlex definido -->
+        <jflex file="${jflex}/${jflexFile}" destdir="${src}" />
+        <!-- Compilar o código Java em ${src} para ${build} -->
+        <javac srcdir="${src}" destdir="${build}" debug="true" />
+    </target>
+    <!-- Gera um arquivo .jar com o programa -->
+    <target name="dist" depends="compile" description="gerar a distribuição">
+        <!-- Criar o diretório dist se ele não existir -->
+        <mkdir dir="${dist}" />
+        <!-- Empacotar o que existir em ${build} em  um arquivo .jar -->
+        <jar jarfile="${dist}/${jarFile}" basedir="${build}">
+            <manifest>
+                <attribute name="Main-Class" value="${package}.${mainClass}" />
+            </manifest>
+        </jar>
+    </target>
+    <!-- Mesmo que dist - gera um arquivo .jar com o programa -->
+    <target name="jar" depends="dist" description="gerar distribuição"></target>
+    <!-- Executa o programa com arquivo teste.input de entrada para testes -->
+    <target name="run" depends="dist" description="executa o projeto">
+        <java classname="${runMainClass}" classpath="${build}" fork="true">
+            <arg value="teste.input" />
+        </java>
+    </target>
+    <!-- Limpar os arquivos gerados no processo -->
+    <target name="clean" description="limpa arquivos gerados">
+        <!-- Apaga o que foi gerado pelo JFlex e em ${build} e ${dist} -->
+        <delete file="${src}/${package}/${mainClass}.java" />
+        <delete file="${src}/${package}/${mainClass}.java~" />
+        <delete dir="${build}" failonerror="false" />
+        <delete dir="${dist}" failonerror="false" />
+    </target>
+</project>

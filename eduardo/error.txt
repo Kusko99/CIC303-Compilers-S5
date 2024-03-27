@@ -1,0 +1,11 @@
+Reading "C:\Users\ferna\OneDrive\Ambiente de Trabalho\CIC303-Compilers-S5\Lexico.flex"
+
+
+Error in file "C:\Users\ferna\OneDrive\Ambiente de Trabalho\CIC303-Compilers-S5\Lexico.flex" (line 110): 
+Unterminated string at end of line.
+
+"\"			{ return new Word(Tag.BACKSLASH);}
+                                        ^
+1 error, 0 warnings.
+
+Generation aborted.

@@ -1,0 +1,4 @@
+if x < 3 then
+	x = 0
+else
+	y = 6.02E23
